@@ -1,0 +1,32 @@
+<main>
+    <div class="container">
+        <div class="row">
+            <div class="col-6 offset-3">
+                <form action="/cadastrar" method="post" enctype="multipart/form-data">
+                    <input type="text" name="nome" id="" placeholder="Digite seu nome...">
+                    <input type="number" name="valor" id="" placeholder="Digite sua idade...">
+                    <input type="file" name="imagem" id="">
+                    <input type="submit" value="Cadastrar" class="btn btn-success">
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="row">
+            {{#each produtos}}
+                <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+                    <div class="card">
+                        <img src="/images/uploads/{{imagem}}" alt="">
+                        <div class="textos">
+                            <p>{{nome}}</p>
+                            <p>{{valor}}</p>
+                        </div>
+                        <a href="#" class="btn btn-warning">Alterar</a>
+                        <a href="/remover/{{id}}/{{imagem}}" onclick="return confirm('Tem certeza que deseja remover este produto?');" class="btn btn-danger">Remover</a>
+                    </div>
+                </div>
+            {{/each}}
+        </div>
+    </div>
+</main>
