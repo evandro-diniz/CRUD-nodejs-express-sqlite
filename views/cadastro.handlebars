@@ -1,11 +1,11 @@
 <main>
-    <div class="container">
+    <div class="container-edit">
         <div class="row">
             <div class="col-6 offset-3">
-                <form action="/cadastrar" method="post" enctype="multipart/form-data">
-                    <input type="text" name="nome" id="" placeholder="Digite seu nome...">
-                    <input type="number" name="valor" id="" placeholder="Digite sua idade...">
-                    <input type="file" name="imagem" id="">
+                <form action="/cadastrar" method="post" enctype="multipart/form-data" class="form-control">
+                    <input type="text" name="nome" id="" placeholder="Digite seu nome..." class="form-control">
+                    <input type="number" name="valor" id="" placeholder="Digite sua idade..." class="form-control">
+                    <input type="file" name="imagem" id="" class="form-control">
                     <input type="submit" value="Cadastrar" class="btn btn-success">
                 </form>
             </div>
@@ -22,7 +22,7 @@
                             <p>{{nome}}</p>
                             <p>{{valor}}</p>
                         </div>
-                        <a href="#" class="btn btn-warning">Alterar</a>
+                        <a href="/editar/{{id}}" class="btn btn-warning">Alterar</a>
                         <a href="/remover/{{id}}/{{imagem}}" onclick="return confirm('Tem certeza que deseja remover este produto?');" class="btn btn-danger">Remover</a>
                     </div>
                 </div>

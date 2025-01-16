@@ -6,7 +6,6 @@ body {
     font-family: Arial, Helvetica, sans-serif;
     width: 100%;
     margin: 0 auto;
-    min-width: 450px;
 }
 
 header {
@@ -21,34 +20,60 @@ header {
 
 nav { 
     background: white;
-    padding: 20px;
+    padding: 2px;
     padding-left: 20%;
     padding-right: 20%;
     background-color: rgb(150, 187, 113);
 }
 
-nav ul {
-    display: flex;
-    list-style-type: none;
-    padding: 0;
+.menu {
+    list-style: none;
     margin: 0;
-    width: auto;
+    padding: 0;
+    display: flex;
 }
 
-li a {
-    color: #000;
-    padding: 8px 16px;
+.menu > li {
+    position: relative; /* Necessário para o submenu */
+}
+
+.menu > li > a {
+    color: white;
     text-decoration: none;
+    padding: 15px 20px;
+    display: block;
 }
 
-li a.active {
-    background-color: rgb(3, 171, 31);
-    color: white;
+.menu > li > a:hover {
+    background-color: rgb(3, 85, 28);
 }
 
-li a:hover:not(.active) {
-    background-color: rgb(3, 171, 31);
+.submenu {
+    list-style: none;
+    position: absolute;
+    top: 100%; /* Posiciona o submenu abaixo do item pai */
+    left: 0;
+    background-color: #444;
+    display: none; /* Esconde o submenu por padrão */
+    margin: 0;
+    padding: 0;
+    min-width: 200px; /* Largura mínima do submenu */
+}
+
+.submenu li a {
     color: white;
+    text-decoration: none;
+    padding: 10px 15px;
+    display: block;
+}
+
+.submenu li a:hover {
+    background-color: rgb(3, 85, 28);
+}
+
+/* Mostra o submenu ao passar o mouse */
+.dropdown:hover .submenu {
+    display: block;
 }
 
 #article-index {
@@ -85,6 +110,41 @@ li a:hover:not(.active) {
     margin: 5px;
     background-color: rgb(207, 246, 171);
 }
+
+form input[type=text], form input[type=email], form input[type=password], form input[type=submit], form input[type=file] {
+    width: 100%;
+    padding: 12px 20px;
+    margin: 8px 0;
+    display: inline-block;
+    border: 1px solid #ccc;
+    box-sizing: border-box;
+}
+
+.container img {
+    width: 100%;
+    height: 200px;
+}
+
+.main-edit {
+    width: 100%;
+    height: auto;
+    display: block;
+    justify-content: space-around;
+    margin-top: 30px;
+    align-items: center;
+    text-align: center;
+}
+
+.container-edit img {
+    width: 30%;
+    height: auto;
+    border-radius: 150px;
+}
+
+.container-edit {
+    margin-top: 30px;
+}
+
 
 footer {
     float: left;

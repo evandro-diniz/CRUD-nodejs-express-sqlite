@@ -1,0 +1,17 @@
+<main class="main-edit">
+    <div class="container-edit">
+        <div class="row">
+            <div class="col-6 offset-3">
+                <form action="/atualizar" method="post" enctype="multipart/form-data" class="form-control">
+                    <img src="/images/uploads/{{personagem.imagem}}" alt="">
+                    <input type="hidden" name="id" class="form-control" value="{{personagem.id}}">
+                    <input type="text" name="nome" class="form-control" value="{{personagem.nome}}">
+                    <input type="number" name="valor" class="form-control" value="{{personagem.valor}}">
+                    <input type="file" name="imagem" class="form-control">
+                    <input type="submit" value="Editar" class="btn btn-success">
+                    <a href="/cadastro" class="btn btn-danger form-control">Cancelar</a>
+                </form>
+            </div>
+        </div>
+    </div>
+</main>

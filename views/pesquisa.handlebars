@@ -1,0 +1,26 @@
+<main>
+  <div class="container-edit">
+      <div class="row">
+        <div class="col-6 offset-3">
+            <form action="/pesquisa" method="get" class="form-control">
+              <input type="text" name="nome" value="{{termo}}" placeholder="Digite o nome do produto..." class="form-control" required/>
+              <button type="submit" class="btn btn-success mt-2 form-control">Pesquisar</button>
+            </form>
+
+            <section id="resultados" class="mt-4">
+              {{#if produtos.length}}
+                <ul>
+                  {{#each produtos}}
+                    <li>
+                      <strong>{{nome}}</strong> - Idade {{valor}}
+                    </li>
+                  {{/each}}
+                </ul>
+              {{else}}
+                <p>Nenhum personagem encontrado.</p>
+              {{/if}}
+            </section>
+          </div>
+      </div>
+  </div>
+</main>

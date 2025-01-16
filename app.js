@@ -3,7 +3,7 @@ const express = require("express");
 const { engine } = require("express-handlebars");
 const path = require("path");
 const sqlite3 = require("sqlite3").verbose();
-const { title } = require("process");
+const { title, send } = require("process");
 const fileupload = require("express-fileupload");
 const fs = require("fs"); // Manipulação de pastas e arquivos
 
@@ -41,12 +41,12 @@ const conexao = new sqlite3.Database("./clientes.db", (erro) => {
 // Criar tabela
 conexao.serialize(() => {
   conexao.run(
-    `
-    CREATE TABLE IF NOT EXISTS produtos (
+    `   
+    CREATE TABLE IF NOT EXISTS usuarios (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       nome TEXT NOT NULL,
-      valor TEXT NOT NULL,
-      imagem TEXT NOT NULL
+      email TEXT NOT NULL,
+      endereco TEXT NOT NULL
     )
   `,
     (erro) => {
@@ -61,7 +61,22 @@ conexao.serialize(() => {
 
 // Rotas
 app.get("/", (req, res) => {
-  res.render("index", { title: "Home", cabecalho: "Página Inicial" });
+  res.render("index", {
+    title: "Home",
+    cabecalho: "Página Inicial",
+    menu: [
+      { name: "Home", link: "/" },
+      {
+        name: "Serviços",
+        link: "/servicos",
+        submenu: [
+          { name: "Desenvolvimento Web", link: "/servicos/web" },
+          { name: "Design Gráfico", link: "/servicos/design" },
+        ],
+      },
+      { name: "Contato", link: "/contato" },
+    ],
+  });
 });
 
 app.get("/sobre", (req, res) => {
@@ -79,7 +94,7 @@ app.get("/cadastro", (req, res) => {
 
     res.render("cadastro", {
       title: "Cadastro",
-      cabecalho: "Cadastrar Informações",
+      cabecalho: "Cadastrar Personagens",
       produtos: rows,
     });
 
@@ -92,6 +107,16 @@ app.get("/cadastro", (req, res) => {
 
 app.get("/blog", (req, res) => {
   res.render("blog", { title: "Blog", cabecalho: "Blog do Evandro." });
+});
+
+// Rota do formulário
+app.get("/contato", (req, res) => {
+  res.render("contato", { title: "Contatos", cabecalho: "Contatos." });
+});
+
+// Rota do cadastro de usuário
+app.post("/contatos", (req, res) => {
+  res.send("Rota contatos");
 });
 
 app.post("/cadastrar", (req, res) => {
@@ -125,6 +150,95 @@ app.post("/cadastrar", (req, res) => {
         res.redirect("/cadastro");
       }
     );
+  });
+});
+
+app.post("/atualizar", (req, res) => {
+  let id = req.body.id;
+  let nome = req.body.nome;
+  let valor = req.body.valor;
+
+  let sql = `UPDATE produtos SET nome = ?, valor = ? WHERE id = ?`;
+
+  // Se uma nova imagem for enviada
+  if (req.files && req.files.imagem) {
+    let imagem = req.files.imagem.name;
+
+    // Atualiza o banco de dados, incluindo a imagem
+    sql = `UPDATE produtos SET nome = ?, valor = ?, imagem = ? WHERE id = ?`;
+
+    conexao.run(sql, [nome, valor, imagem, id], function (erro) {
+      if (erro) {
+        console.error("Erro ao atualizar o banco de dados:", erro.message);
+        return res.status(500).send("Erro ao atualizar o produto.");
+      }
+
+      // Substitui a imagem antiga
+      req.files.imagem.mv(
+        __dirname + "/public/images/uploads/" + imagem,
+        (err) => {
+          if (err) {
+            console.error("Erro ao mover o arquivo:", err.message);
+            return res.status(500).send("Erro ao salvar a nova imagem.");
+          }
+          console.log("Produto atualizado com sucesso:", id);
+          res.redirect("/cadastro");
+        }
+      );
+    });
+  } else {
+    // Atualiza o banco de dados sem alterar a imagem
+    conexao.run(sql, [nome, valor, id], function (erro) {
+      if (erro) {
+        console.error("Erro ao atualizar o banco de dados:", erro.message);
+        return res.status(500).send("Erro ao atualizar o produto.");
+      }
+
+      console.log("Produto atualizado com sucesso:", id);
+      res.redirect("/cadastro");
+    });
+  }
+});
+
+app.get("/pesquisa", (req, res) => {
+  const nome = req.query.nome || ""; // Recebe o termo da URL
+  const sql = "SELECT * FROM produtos WHERE nome LIKE ?";
+
+  conexao.all(sql, [`%${nome}%`], (erro, resultados) => {
+    if (erro) {
+      console.error("Erro ao buscar resultados:", erro.message);
+      return res.status(500).send("Erro no servidor.");
+    }
+
+    res.render("pesquisa", {
+      title: "Pesquisar Produtos",
+      cabecalho: "Resultados da Pesquisa",
+      produtos: resultados,
+      termo: nome, // Para manter o termo no input de pesquisa
+    });
+  });
+});
+
+app.get("/editar/:id", (req, res) => {
+  const id = req.params.id;
+
+  if (!id) {
+    return res.status(400).send("ID não informado.");
+  }
+
+  let sql = `SELECT * FROM produtos WHERE id = ?`;
+
+  conexao.get(sql, [id], (erro, rows) => {
+    if (erro) {
+      console.error("Erro ao consultar o banco de dados:", erro.message);
+      return res.status(500).send("Erro ao carregar o produto.");
+    }
+
+    res.render("editar", {
+      title: "Editar",
+      cabecalho: "Editar Informações",
+      personagem: rows,
+    });
   });
 });
 
